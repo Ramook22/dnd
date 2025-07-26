@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Knight's Codex</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lora', serif;
+            background-color: #fdf6e3; /* Parchment color */
+        }
+        h1, h2 {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+        }
+        .quote-card {
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid #d1c7b3;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .quote-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        blockquote {
+            font-style: italic;
+            color: #333;
+            border-left: 3px solid #a67b5b;
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1.25rem; /* Increased spacing */
+        }
+        /* Ensure the last quote in a card doesn't have extra bottom margin */
+        blockquote:last-child {
+            margin-bottom: 0;
+        }
+		
+		/* Special formatting for the Vow card */
+        .vow-card {
+            background-color: rgba(250, 245, 230, 0.8);
+            border: 2px solid #a67b5b;
+            text-align: center;
+        }
+        .vow-card blockquote {
+            border-left: none;
+            padding-left: 0;
+        }
+        .vow-card blockquote:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="text-[#4a3f35]">
+
+		<div class="container mx-auto p-6 md:p-10">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl text-[#5a4a3e]">The Codex of Honor</h1>
+            <p class="text-lg mt-2">A Knight's Words for a World in Need</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+			<!-- Personal Code -->
+			<div class="quote-card p-6 lg:col-span-3">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">My Personal Code</h2>
+                <blockquote><b>Justice Before Judgment:</b> I will seek truth before issuing blame. If punishment must fall, it will fall with purpose—not to show strength, but to uphold peace.</blockquote>
+				<br>
+                <blockquote><b>Compassion Is Not Weakness:</b> I will not mistake cruelty for discipline. The weak deserve protection, not condemnation.</blockquote>
+				<br>
+                <blockquote><b>The Spirit, Not Just the Words:</b> I will know the Measure, respect it, and live by its heart—even when its wording falls short of wisdom.</blockquote>
+				<br>
+                <blockquote><b>Mercy Is a Blade of Its Own:</b> I will spare those who yield, offer redemption where it is sought, and remember that every foe was once a child.</blockquote>
+				<br>
+                <blockquote><b>I Do Not Serve a Throne—I Serve the People:</b> My loyalty is to those who suffer, not those who rule. If their will diverges, I will side with the helpless.</blockquote>
+				<br>
+                <blockquote><b>I Will Lead When Needed, Follow When Right, and Stand Alone When Necessary:</b> Honor means choosing the hard path when it is the right one, even if I walk it alone.</blockquote>
+            </div>
+
+			<!-- Knightly Vow -->
+            <div class="quote-card vow-card p-6 lg:col-span-3">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">My Knightly Vow</h2>
+                <blockquote>I am Darrian Rendorie, and I swear this oath before the gods of good, the Order of the Sword, and the memory of those who have fallen in defense of honor.</blockquote>
+                <blockquote>I vow to stand between the innocent and the shadow, to wield my blade not for glory but for justice.</blockquote>
+                <blockquote>I will act with courage, tempered by compassion.</blockquote>
+                <blockquote>I will hold truth above comfort, and mercy above pride.</blockquote>
+                <blockquote>I will serve the spirit of the Measure, not just its letters—for law without wisdom is tyranny, and obedience without thought is cowardice.</blockquote>
+                <blockquote>I will fight with faith, but I will never let faith blind me to suffering.</blockquote>
+                <blockquote>Let my sword be swift against evil, my shield steadfast for the helpless, and my voice unshaken in the presence of fear.</blockquote>
+                <blockquote>This I swear, in honor of my mentor, in memory of the fallen, and in service to all who cannot lift a blade of their own.</blockquote>
+            </div>
+
+			<!-- Header for situational quotes -->
+            <div class="lg:col-span-3 text-center mt-12 mb-4">
+                <h2 class="text-3xl text-[#5a4a3e]">Words for the Path</h2>
+                <div class="w-64 h-px mx-auto mt-3 bg-[#d1c7b3]"></div>
+            </div>
+
+            <!-- General Purpose -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">General Purpose</h2>
+                <blockquote>A Knight of Solamnia does not ask if we should do the right thing—only how.</blockquote>
+				<br>
+                <blockquote>I serve not only my blade, but the souls it must protect.</blockquote>
+				<br>
+                <blockquote>Your quarrel is not with me. It is with the ideals you have abandoned.</blockquote>
+				<br>
+                <blockquote>Honor is the armor no blade can pierce.</blockquote>
+				<br>
+                <blockquote>We are the wall against the coming night. Let us not be found crumbling.</blockquote>
+            </div>
+
+            <!-- Morning Prayer -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Morning Prayer</h2>
+                <blockquote>Let my blade be swift, my heart be still, and my cause remain just. The day is new, and so must I be.</blockquote>
+				<br>
+                <blockquote>I rise not for glory, but for duty. Let the light find no shadow in my soul.</blockquote>
+				<br>
+                <blockquote>Another dawn, another chance to stand between the world and the dark. Let me be worthy of the space I hold.</blockquote>
+				<br>
+                <blockquote>The sun rises, and with it, my duty. May I meet it without faltering.</blockquote>
+            </div>
+
+            <!-- Evening Reflection -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Evening Reflection</h2>
+                <blockquote>May my sword sleep clean, my shield be heavy with mercy, and my choices sit quiet in my chest.</blockquote>
+				<br>
+                <blockquote>If I erred today, let the gods forgive me. If I stood true, let the weary rest easy.</blockquote>
+				<br>
+                <blockquote>The Measure may judge the day, but I must judge my heart. And tonight, it is heavy—but not ashamed.</blockquote>
+				<br>
+                <blockquote>The day is done. The deeds are weighed. May my conscience be my softest pillow.</blockquote>
+            </div>
+
+            <!-- Contemplating a Tough Moral Choice -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">A Tough Moral Choice</h2>
+                <blockquote>The law may speak, but it is not the voice I listen for. I listen for the cry of the one it forgets.</blockquote>
+				<br>
+                <blockquote>What is right is not always what is written. And what is written is not always right.</blockquote>
+				<br>
+                <blockquote>I do not fear consequences. I fear failing to be the man Isben believed I could become.</blockquote>
+				<br>
+                <blockquote>Sometimes, the harder path is the one that leads home.</blockquote>
+				<br>
+                <blockquote>A thousand rules cannot make a single right choice.</blockquote>
+            </div>
+
+            <!-- Before Battle -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Before Battle</h2>
+                <blockquote>The blade is not what makes me a knight. What I fight for does.</blockquote>
+				<br>
+                <blockquote>Stand tall, strike true. And if this is the end, let it be the kind they tell stories about.</blockquote>
+				<br>
+                <blockquote>My shield is not for myself. It is for the one who cannot raise theirs.</blockquote>
+				<br>
+                <blockquote>Let the world know we did not kneel to fear.</blockquote>
+				<br>
+                <blockquote>Let our courage be a light so bright it blinds our foes.</blockquote>				
+            </div>
+
+            <!-- Defying Unjust Authority -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Defying Unjust Authority</h2>
+                <blockquote>I serve Solamnia—but not the hand that strangles her.</blockquote>
+				<br>
+                <blockquote>You confuse obedience with honor. I do not.</blockquote>
+				<br>
+                <blockquote>Your seal may carry weight in court. Mine is carved in deed.</blockquote>
+				<br>
+                <blockquote>The Measure does not protect tyrants—it protects those they would trample.</blockquote>
+				<br>
+                <blockquote>I live by a code older than any book. And it is written in deeds, not words.</blockquote>
+				<br>
+                <blockquote>Your rank gives you power, but my oath gives me purpose. They are not the same.</blockquote>
+            </div>
+            
+            <!-- When Offering Mercy -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">When Offering Mercy</h2>
+                <blockquote>Yield, and I will show you the mercy I wish had been shown to others.</blockquote>
+				<br>
+                <blockquote>I take no pride in bloodshed. Lay down your blade and walk away with your soul.</blockquote>
+				<br>
+                <blockquote>I do not want your life. I want you to make something better of it.</blockquote>
+				<br>
+                <blockquote>The truest victory is not in crushing a foe, but in helping them rise from their own defeat.</blockquote>
+				<br>
+                <blockquote>This path does not have to be your end. Choose another.</blockquote>
+            </div>
+            
+            <!-- When Facing Despair -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">When Facing Despair</h2>
+                <blockquote>Hope is not a feeling, it is a duty. And I will not shirk it.</blockquote>
+				<br>
+                <blockquote>Even the smallest candle pushes back the dark. I will be that candle.</blockquote>
+				<br>
+                <blockquote>If my honor costs me everything, then it is a price I have already agreed to pay.</blockquote>
+				<br>
+                <blockquote>They can take my life, but not the reason I gave it.</blockquote>
+            </div>
+            
+            <!-- When Questioned by Allies -->
+            <div class="quote-card p-6">
+                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">When Questioned by Allies</h2>
+                <blockquote>Trust my shield, if not my reasons. It will not falter.</blockquote>
+				<br>
+                <blockquote>My path may seem strange, but it leads to the same dawn we all seek.</blockquote>
+				<br>
+                <blockquote>I am bound by an oath you cannot see, but you will see the good it brings.</blockquote>
+				<br>
+                <blockquote>Ask me for my life, and it is yours. But do not ask me to betray my honor.</blockquote>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
