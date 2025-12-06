@@ -5,309 +5,391 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Knight's Codex</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --parchment: #fdf6e3;
+            --parchment-dark: #f0e6d2;
+            --ink: #4a3f35;
+            --leather: #3e3228;
+            --leather-hover: #5a4a3e;
+            --accent-gold: #c5a059;
+            --accent-steel: #7a8b99;
+            --combat-red: #8a3324;
+            --mercy-blue: #4a6fa5;
+            --spirit-purple: #5e4b8b;
+        }
+
         body {
             font-family: 'Lora', serif;
-            background-color: #fdf6e3; /* Parchment color */
+            background-color: var(--parchment);
+            color: var(--ink);
         }
-        h1, h2 {
+        h1, h2, h3 {
             font-family: 'Cinzel', serif;
             font-weight: 700;
         }
+
+        /* --- CARDS --- */
         .quote-card {
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.6);
             border: 1px solid #d1c7b3;
             border-radius: 0.5rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             transition: all 0.3s ease-in-out;
+            position: relative; /* Context for children */
         }
         .quote-card:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transform: translateY(-2px);
         }
+
+        /* --- TYPOGRAPHY --- */
         blockquote {
             font-style: italic;
-            color: #333;
+            color: #2c2520;
             border-left: 3px solid #a67b5b;
             padding-left: 1rem;
             margin-top: 0.5rem;
-            margin-bottom: 1.25rem; /* Increased spacing */
+            margin-bottom: 1.25rem;
         }
-        /* Ensure the last quote in a card doesn't have extra bottom margin */
-        blockquote:last-child {
-            margin-bottom: 0;
-        }
-		
-		/* Special formatting for the Vow card */
+        blockquote:last-child { margin-bottom: 0; }
+
+       /* --- VOW CARD (Special) --- */
         .vow-card {
             background-color: rgba(250, 245, 230, 0.8);
-            border: 2px solid #a67b5b;
+            border: 2px double #a67b5b;
             text-align: center;
         }
         .vow-card blockquote {
             border-left: none;
             padding-left: 0;
+            display: block;
+            margin-bottom: 0.8rem;
         }
-        .vow-card blockquote:last-child {
-            border-bottom: none;
+
+        /* --- GENERATOR SECTION --- */
+        .api-section {
+            text-align: center;
+            margin-bottom: 30px;
         }
+
+        input[type="password"] {
+            width: 70%;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #a67b5b;
+            color: var(--ink);
+            border-radius: 4px;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="password"]:focus {
+            border-color: var(--combat-red);
+            box-shadow: 0 0 5px rgba(166, 123, 91, 0.3);
+        }
+
+        /* Category Labels */
+        .category-label {
+            font-size: 0.8rem;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            color: #8a7b6b;
+            margin: 25px 0 10px 0;
+            border-bottom: 1px solid #d1c7b3;
+            width: 100%;
+            text-align: left;
+        }
+
+        /* Button Grid */
+        .grid-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        @media (min-width: 768px) {
+             .grid-buttons { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        button {
+            padding: 14px 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.2s;
+            background: var(--leather);
+            color: #e0d0c0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        button:hover { background: var(--leather-hover); transform: translateY(-1px); }
+        button:active { transform: translateY(1px); }
+        button span {
+            font-size: 0.6rem;
+            font-weight: normal;
+            opacity: 0.8;
+            margin-top: 4px;
+            text-transform: none;
+            font-family: 'Lora', serif;
+            font-style: italic;
+        }
+
+        /* Theme Borders for Buttons */
+        .btn-ritual { border-bottom: 3px solid var(--accent-gold); }
+        .btn-social { border-bottom: 3px solid var(--accent-steel); }
+        .btn-combat { border-bottom: 3px solid var(--combat-red); }
+        .btn-mercy { border-bottom: 3px solid var(--mercy-blue); }
+        .btn-crisis { border-bottom: 3px solid var(--spirit-purple); }
+
+        /* --- OUTPUT BOX --- */
+        .quote-box {
+            background-color: #fff;
+            color: var(--ink);
+            padding: 25px 20px 40px 20px; /* Extra bottom padding for the sigil */
+            min-height: 120px;
+            border-radius: 4px;
+            font-style: italic;
+            font-size: 1.25rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d1c7b3;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            position: relative; /* Keeps the absolute sigil inside */
+            line-height: 1.5;
+            margin-top: 30px;
+        }
+
+        .loader { display: none; font-size: 1rem; color: var(--accent-gold); }
+
+        .sigil {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.75rem;
+            opacity: 0.5;
+            font-family: 'Cinzel', serif;
+            color: var(--combat-red);
+            letter-spacing: 1px;
+        }
+
     </style>
 </head>
 <body class="text-[#4a3f35]">
 
-<div class="container mx-auto p-6 md:p-10">        
-	
-	<div class="container mx-auto p-6 md:p-10">
-        <header class="text-center mb-12">
-	    <div class="inline-block bg-white p-3 rounded-2xl shadow-lg mx-auto mb-6">
-                <img src="darrian-crest.png" alt="Crest of Darrian Rendorie" class="w-52 h-52 object-contain">
-            </div>
-            <h1 class="text-4xl md:text-5xl text-[#5a4a3e]">The Codex of Honor</h1>
-            <p class="text-lg mt-2">A Knight's Words for a World in Need</p>
-        </header>
+<div class="container mx-auto p-6 md:p-10 max-w-5xl">
+    <header class="text-center mb-12">
+        <div class="inline-block bg-white p-4 rounded-full shadow-md mx-auto mb-6 border border-[#d1c7b3]">
+            <img src="darrian-crest.png" alt="Crest" class="w-32 h-32 object-contain opacity-80" onerror="this.style.display='none'">
+        </div>
+        <h1 class="text-4xl md:text-5xl text-[#3e3228]">The Codex of Honor</h1>
+        <p class="text-lg mt-2 italic text-[#6b5a4a]">A Knight's Words for a World in Need</p>
+    </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-			<!-- Personal Code -->
-			<div class="quote-card p-6 lg:col-span-3">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">My Personal Code</h2>
-                <blockquote><b>Justice Before Judgment:</b> I will seek truth before issuing blame. If punishment must fall, it will fall with purpose—not to show strength, but to uphold peace.</blockquote>
-				<br>
-                <blockquote><b>Compassion Is Not Weakness:</b> I will not mistake cruelty for discipline. The weak deserve protection, not condemnation.</blockquote>
-				<br>
-                <blockquote><b>The Spirit, Not Just the Words:</b> I will know the Measure, respect it, and live by its heart—even when its wording falls short of wisdom.</blockquote>
-				<br>
-                <blockquote><b>Mercy Is a Blade of Its Own:</b> I will spare those who yield, offer redemption where it is sought, and remember that every foe was once a child.</blockquote>
-				<br>
-                <blockquote><b>I Do Not Serve a Throne—I Serve the People:</b> My loyalty is to those who suffer, not those who rule. If their will diverges, I will side with the helpless.</blockquote>
-				<br>
-                <blockquote><b>I Will Lead When Needed, Follow When Right, and Stand Alone When Necessary:</b> Honor means choosing the hard path when it is the right one, even if I walk it alone.</blockquote>
-            </div>
-
-			<!-- Knightly Vow -->
-            <div class="quote-card vow-card p-6 lg:col-span-3">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">My Knightly Vow</h2>
-                <blockquote>I am Darrian Rendorie, and I swear this oath before the gods of good, the Order, and the memory of those who have fallen in defense of honor.</blockquote>
-                <blockquote>I vow to stand between the innocent and the shadow, to wield my blade not for glory but for justice.</blockquote>
-                <blockquote>I will act with courage, tempered by compassion.</blockquote>
-                <blockquote>I will hold truth above comfort, and mercy above pride.</blockquote>
-                <blockquote>I will serve the spirit of the Measure, not just its letters—for law without wisdom is tyranny, and obedience without thought is cowardice.</blockquote>
-                <blockquote>I will fight with faith, but I will never let faith blind me to suffering.</blockquote>
-                <blockquote>Let my sword be swift against evil, my shield steadfast for the helpless, and my voice unshaken in the presence of fear.</blockquote>
-                <blockquote>This I swear, in honor of my mentor, in memory of the fallen, and in service to all who cannot lift a blade of their own.</blockquote>
-            </div>
-
-			<!-- Header for situational quotes -->
-            <div class="lg:col-span-3 text-center mt-12 mb-4">
-                <h2 class="text-3xl text-[#5a4a3e]">Words for the Path</h2>
-                <div class="w-64 h-px mx-auto mt-3 bg-[#d1c7b3]"></div>
-            </div>
-
-            <!-- General Purpose -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">General Purpose</h2>
-                <blockquote>A Knight of Solamnia does not ask if we should do the right thing—only how.</blockquote>
-				<br>
-                <blockquote>I serve not only my blade, but the souls it must protect.</blockquote>
-				<br>
-                <blockquote>Your quarrel is not with me. It is with the ideals you have abandoned.</blockquote>
-				<br>
-                <blockquote>Honor is the armor no blade can pierce.</blockquote>
-				<br>
-                <blockquote>We are the wall against the coming night. Let us not be found crumbling.</blockquote>
-				<br>
-                <blockquote>Stand as one, and no darkness endures!</blockquote>
-				<br>
-                <blockquote>Fight for the light within you!</blockquote>
-				<br>
-                <blockquote>Honor does not yield — nor will we!</blockquote>
-				<br>
-                <blockquote>Our faith is stronger than their steel.</blockquote>
-            </div>
-
-            <!-- Morning Prayer -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Morning Prayer</h2>
-                <blockquote>Let my blade be swift, my heart be still, and my cause remain just. The day is new, and so must I be.</blockquote>
-				<br>
-                <blockquote>I rise not for glory, but for duty. Let the light find no shadow in my soul.</blockquote>
-				<br>
-                <blockquote>Another dawn, another chance to stand between the world and the dark. Let me be worthy of the space I hold.</blockquote>
-				<br>
-                <blockquote>The sun rises, and with it, my duty. May I meet it without faltering.</blockquote>
-            </div>
-
-            <!-- Evening Reflection -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Evening Reflection</h2>
-                <blockquote>May my sword sleep clean, my shield be heavy with mercy, and my choices sit quiet in my chest.</blockquote>
-				<br>
-                <blockquote>If I erred today, let the gods forgive me. If I stood true, let the weary rest easy.</blockquote>
-				<br>
-                <blockquote>The Measure may judge the day, but I must judge my heart. And tonight, it is heavy—but not ashamed.</blockquote>
-				<br>
-                <blockquote>The day is done. The deeds are weighed. May my conscience be my softest pillow.</blockquote>
-            </div>
-
-            <!-- Contemplating a Tough Moral Choice -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">A Tough Moral Choice</h2>
-                <blockquote>The law may speak, but it is not the voice I listen for. I listen for the cry of the one it forgets.</blockquote>
-				<br>
-                <blockquote>What is right is not always what is written. And what is written is not always right.</blockquote>
-				<br>
-                <blockquote>I do not fear consequences. I fear failing to be the man Isben believed I could become.</blockquote>
-				<br>
-                <blockquote>Sometimes, the harder path is the one that leads home.</blockquote>
-				<br>
-                <blockquote>A thousand rules cannot make a single right choice.</blockquote>
-            </div>
-
-            <!-- Before Battle -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Before Battle</h2>
-                <blockquote>The blade is not what makes me a knight. What I fight for does.</blockquote>
-				<br>
-                <blockquote>Stand tall, strike true. And if this is the end, let it be the kind they tell stories about.</blockquote>
-				<br>
-                <blockquote>My shield is not for myself. It is for the one who cannot raise theirs.</blockquote>
-				<br>
-                <blockquote>Let the world know we did not kneel to fear.</blockquote>
-				<br>
-                <blockquote>Let our courage be a light so bright it blinds our foes.</blockquote>
-				<br>
-                <blockquote>You face the weight of my oaths.</blockquote>
-            </div>
-
-			<!-- Before Attacking -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Before Attacking</h2>
-                <blockquote>Face my reflection — and your reckoning.</blockquote>
-				<br>
-                <blockquote>My blade is the echo of justice.</blockquote>
-				<br>
-                <blockquote>You’ll find no mercy in dishonor.</blockquote>
-				<br>
-                <blockquote>Every strike remembers the fallen.</blockquote>
-				<br>
-				<blockquote>Two blades, one purpose.</blockquote>
-				<br>
-				<blockquote>The echo of my will shall not waver.</blockquote>
-				<br>
-				<blockquote>I fight so others need not.</blockquote>
-				<br>
-				<blockquote>Let the light of Paladine burn through you.</blockquote>
-				<br>				
-                <blockquote>Let our courage be a light so bright it blinds our foes.</blockquote>				
-            </div>
-
-			<!-- When an Enemy Falls -->
-			<div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">When an Enemy Falls</h2>
-                <blockquote>Justice is served, not celebrated.</blockquote>
-				<br>
-				<blockquote>Rest now — your fight is done.</blockquote>
-				<br>
-				<blockquote>Even the wicked deserve remembrance.</blockquote>
-				<br>
-				<blockquote>May Paladine weigh your soul fairly.</blockquote>
-				<br>
-				<blockquote>One less burden on this broken world.</blockquote>
-				<br>
-				<blockquote>The fight is done — may your soul find its light.</blockquote>
-				<br>
-				<blockquote>You chose your path; may the gods forgive its end.</blockquote>
-				<br>
-				<blockquote>There’s no victory in death, only duty.</blockquote>
-				<br>
-				<blockquote>So ends another who mistook power for purpose.</blockquote>
-				<br>
-				<blockquote>Blood spills, but the world does not grow cleaner.</blockquote>				
-				<br>
-				<blockquote>If only you’d chosen a better path.</blockquote>
-				<br>
-				When the Echo Helps Deliver the Final Blow
-				<blockquote>Two blades, one judgment.</blockquote>
-				<br>
-				<blockquote>The Echo of Honor delivers your end.</blockquote>
-				<br>
-				<blockquote>Your fate was sealed long before my echo’s blade fell.</blockquote>
-				<br>
-				<blockquote>The will of Paladine strikes in harmony.</blockquote>
-				<br>
-				<blockquote>The spirit and I are one in purpose.</blockquote>
-            </div>
-
-			
-            <!-- Defying Unjust Authority -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">Defying Unjust Authority</h2>
-                <blockquote>I serve Solamnia—but not the hand that strangles her.</blockquote>
-				<br>
-                <blockquote>You confuse obedience with honor. I do not.</blockquote>
-				<br>
-                <blockquote>Your seal may carry weight in court. Mine is carved in deed.</blockquote>
-				<br>
-                <blockquote>The Measure does not protect tyrants—it protects those they would trample.</blockquote>
-				<br>
-                <blockquote>I live by a code older than any book. And it is written in deeds, not words.</blockquote>
-				<br>
-                <blockquote>Your rank gives you power, but my oath gives me purpose. They are not the same.</blockquote>
-            </div>
-            
-            <!-- When Offering Mercy -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">When Offering Mercy</h2>
-                <blockquote>Yield, and I will show you the mercy I wish had been shown to others.</blockquote>
-				<br>
-                <blockquote>I take no pride in bloodshed. Lay down your blade and walk away with your soul.</blockquote>
-				<br>
-                <blockquote>I do not want your life. I want you to make something better of it.</blockquote>
-				<br>
-                <blockquote>The truest victory is not in crushing a foe, but in helping them rise from their own defeat.</blockquote>
-				<br>
-                <blockquote>This path does not have to be your end. Choose another.</blockquote>
-            </div>
-            
-            <!-- When Facing Despair -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">When Facing Despair</h2>
-                <blockquote>Hope is not a feeling, it is a duty. And I will not shirk it.</blockquote>
-				<br>
-                <blockquote>Even the smallest candle pushes back the dark. I will be that candle.</blockquote>
-				<br>
-                <blockquote>If my honor costs me everything, then it is a price I have already agreed to pay.</blockquote>
-				<br>
-                <blockquote>They can take my life, but not the reason I gave it.</blockquote>
-				<br>
-                <blockquote>The gods test me — I will not disappoint them.</blockquote>
-				<br>
-                <blockquote>Even in defeat, honor stands unbroken.</blockquote>
-				<br>
-                <blockquote>One knight’s courage can turn the tide.</blockquote>
-				<br>
-                <blockquote>Paladine, if this be my end, let it shine.</blockquote>
-            </div>
-
-            <!-- When Questioned by Allies -->
-            <div class="quote-card p-6">
-                <h2 class="text-2xl mb-4 border-b-2 border-[#d1c7b3] pb-2">When Questioned by Allies</h2>
-                <blockquote>Trust my shield, if not my reasons. It will not falter.</blockquote>
-				<br>
-                <blockquote>My path may seem strange, but it leads to the same dawn we all seek.</blockquote>
-				<br>
-                <blockquote>I am bound by an oath you cannot see, but you will see the good it brings.</blockquote>
-				<br>
-                <blockquote>Ask me for my life, and it is yours. But do not ask me to betray my honor.</blockquote>
-            </div>
-
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="quote-card p-6 md:col-span-3">
+            <h2 class="text-xl mb-4 border-b border-[#d1c7b3] pb-2 text-[#8a3324]">My Personal Code</h2>
+            <blockquote><b>Justice Before Judgment:</b> I will seek truth before issuing blame. If punishment must fall, it will fall with purpose.</blockquote>
+            <br>
+            <blockquote><b>Compassion Is Not Weakness:</b> I will not mistake cruelty for discipline. The weak deserve protection.</blockquote>
+            <br>
+            <blockquote><b>The Spirit, Not Just the Words:</b> I will live by the Measure's heart—even when its wording falls short of wisdom.</blockquote>
+            <br>
+            <blockquote><b>Mercy Is a Blade of Its Own:</b> I will spare those who yield. Every foe was once a child.</blockquote>
+            <br>
+            <blockquote><b>I Serve the People:</b> My loyalty is to those who suffer, not those who rule.</blockquote>
+            <br>
+            <blockquote><b>Stand Alone When Necessary:</b> Honor means choosing the hard path when it is the right one.</blockquote>
         </div>
 
+        <div class="quote-card vow-card p-6 md:col-span-3">
+            <h2 class="text-xl mb-4 border-b border-[#a67b5b] pb-2 text-[#8a3324]">The Knightly Vow</h2>
+            <blockquote>I vow to stand between the innocent and the shadow.</blockquote>
+            <blockquote>I will act with courage, tempered by compassion.</blockquote>
+            <blockquote>I will hold truth above comfort, and mercy above pride.</blockquote>
+            <blockquote>I will fight with faith, but I will never let faith blind me to suffering.</blockquote>
+            <blockquote>Let my sword be swift against evil, and my shield steadfast for the helpless.</blockquote>
+            <blockquote>This I swear, in honor of my mentor and in service to all who cannot lift a blade of their own.</blockquote>
+        </div>
+
+        <div class="quote-card md:col-span-2 p-8 mt-4">
+            <div class="text-center">
+                <h2 class="text-3xl text-[#3e3228] mb-2">Words for the Path</h2>
+                <p class="text-sm italic mb-6 opacity-70">Consult the wisdom of the Echo Knight</p>
+
+                <div class="api-section">
+                    <input type="password" id="apiKey" placeholder="Enter Codex Key (API Key)">
+                </div>
+            </div>
+
+            <div>
+                <div class="category-label">Daily Rites</div>
+                <div class="grid-buttons">
+                    <button class="btn-ritual" id="btn-morning">Morning Prayer <span>Intention</span></button>
+                    <button class="btn-ritual" id="btn-evening">Evening Prayer <span>Reflection</span></button>
+                </div>
+
+                <div class="category-label">Honor & Diplomacy</div>
+                <div class="grid-buttons">
+                    <button class="btn-social" id="btn-social">Social <span>Dignity</span></button>
+                    <button class="btn-social" id="btn-moral">Moral Choice <span>Conscience</span></button>
+                    <button class="btn-mercy" id="btn-trust">Ask Trust <span>Assurance</span></button>
+                    <button class="btn-mercy" id="btn-mercy">Offer Mercy <span>Redemption</span></button>
+                </div>
+
+                <div class="category-label">The Sword</div>
+                <div class="grid-buttons">
+                    <button class="btn-combat" id="btn-prebattle">Before Battle <span>Resolve</span></button>
+                    <button class="btn-combat" id="btn-attack">Striking <span>Justice</span></button>
+                    <button class="btn-combat" id="btn-fallen">Enemy Falls <span>Solemnity</span></button>
+                    <button class="btn-crisis" id="btn-despair">Despair <span>Hold Fast</span></button>
+                </div>
+            </div>
+
+            <div class="quote-box">
+                <span id="loader" class="loader">Consulting the Measure...</span>
+                <span id="quoteOutput">"The measure is not a rulebook. It is a light in dark places."</span>
+                <div class="sigil">Est Sularus oth Mithas</div>
+            </div>
+        </div>
     </div>
+
+    <footer class="text-center mt-12 opacity-50 text-xs font-serif">
+        Remember: Honor is My Life
+    </footer>
+</div>
+
+<script type="module">
+    // --- CONFIGURATION ---
+    const STORAGE_KEY = "darrian_codex_key";
+
+    // Check for saved key on load
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedKey = localStorage.getItem(STORAGE_KEY);
+        const inputField = document.getElementById('apiKey');
+        if (savedKey) {
+            inputField.value = savedKey;
+            inputField.style.borderColor = "#4a6fa5"; // Blue to indicate loaded
+        }
+    });
+
+    // IMPORT MAP HANDLES THE GOOGLE IMPORT NOW
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
+    // 1. UPDATED CONTEXT
+    const characterContext = `
+    You are Darrian Rendoric, a Knight of Solamnia and Echo Knight.
+
+    PERSONAL CODE (The source of your Honor):
+    1. Justice Before Judgment: Seek truth before blame. Uphold peace, not just strength.
+    2. Compassion Is Not Weakness: Protect the weak. Do not mistake cruelty for discipline.
+    3. The Spirit, Not Just the Words: Live by the Measure's heart, even when its text falls short.
+    4. Mercy Is a Blade of Its Own: Remember every foe was once a child. Offer redemption.
+    5. I Do Not Serve a Throne: Loyalty to the suffering, not the rulers. Side with the helpless.
+    6. Lead, Follow, or Stand Alone: Honor means walking the hard path alone if needed.
+
+    TONE EXAMPLES (Use these to match style):
+    - "Your quarrel is not with them. It is with the ideals you have abandoned."
+    - "You’ll find no mercy in dishonor."
+    - "My blade is the echo of justice."
+    - "The path of honor is the harder road, and the only one worth walking."
+    - "Hope is not a feeling, it is a duty."
+    - "No command may stand above conscience."
+    - "Let my blade be swift, my heart be still, and my cause remain just."
+    - "Yield, and I will show you the mercy I wish had been shown to others."
+
+    INSTRUCTION:
+    Generate a SINGLE, short, epic quote (max 15 words) for the scenario.
+    Reference your PERSONAL CODE to ensure the quote aligns with your virtues.
+    Do not use quotation marks in the output.
+    `;
+
+    // 2. SCENARIO MAPPING
+    const scenarios = {
+        'btn-morning': "Scenario: Morning Prayer. Setting intention for the day. Theme: Renewal, Justice.",
+        'btn-evening': "Scenario: Evening Prayer. Reflecting on the day. Theme: Peace, Quiet Conscience.",
+        'btn-social': "Scenario: General social interaction. Speaking with dignity and knightly honor.",
+        'btn-moral': "Scenario: Tough Moral Choice. Deciding between the law and what is Right. Theme: Spirit over Words.",
+        'btn-trust': "Scenario: Asking for Trust. You need someone to believe in you despite doubts.",
+        'btn-mercy': "Scenario: Offering Mercy. Asking an enemy to yield to save their soul. Theme: Compassion.",
+        'btn-prebattle': "Scenario: Entering Battle. Steeling yourself and allies. Theme: Protection of others.",
+        'btn-attack': "Scenario: Attacking/Striking. Justice delivered through the blade.",
+        'btn-fallen': "Scenario: An Enemy Falls. Acknowledging the end of a life without gloating.",
+        'btn-despair': "Scenario: Facing Despair or Overwhelming Odds. Refusing to give up. Theme: Duty, Hope."
+    };
+
+    // 3. EVENT LISTENERS
+    Object.keys(scenarios).forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if(btn) {
+            btn.addEventListener('click', () => getQuote(scenarios[btnId]));
+        }
+    });
+
+    async function getQuote(scenarioPrompt) {
+        const inputField = document.getElementById('apiKey');
+        const apiKey = inputField.value.trim();
+        const output = document.getElementById('quoteOutput');
+        const loader = document.getElementById('loader');
+
+        if (!apiKey) {
+            alert("Please paste your Codex Key (API Key) first.");
+            return;
+        }
+
+        output.style.display = 'none';
+        loader.style.display = 'block';
+
+        try {
+            const genAI = new GoogleGenerativeAI(apiKey);
+            // Switched to a standard valid model name
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+
+            const result = await model.generateContent(characterContext + "\n\n" + scenarioPrompt);
+            const response = await result.response;
+            const text = response.text();
+
+            output.innerText = text;
+
+            // Save on success
+            if (!localStorage.getItem(STORAGE_KEY)) {
+                localStorage.setItem(STORAGE_KEY, apiKey);
+                inputField.style.borderColor = "#4a6fa5";
+            }
+
+        } catch (error) {
+            console.error("Error details:", error);
+            output.innerText = "The Measure is silent... (Check Key or Console)";
+            if (error.message.includes("400") || error.message.includes("403")) {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        } finally {
+            loader.style.display = 'none';
+            output.style.display = 'block';
+        }
+    }
+</script>
 
 </body>
 </html>
-
